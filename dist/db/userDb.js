@@ -7,12 +7,12 @@ exports.deleteUserFromDb = exports.updateUserInDb = exports.insertUser = exports
 const excuteQuery_1 = __importDefault(require("../models/excuteQuery"));
 // Get all users
 const getAllUsersFromDb = async () => {
-    return await (0, excuteQuery_1.default)("SELECT id, name, email, phone, landmark, flatnumber, pincode, city, state FROM users");
+    return await (0, excuteQuery_1.default)("SELECT id, name, email, phone, role, landmark, flatnumber, pincode, city, state FROM users");
 };
 exports.getAllUsersFromDb = getAllUsersFromDb;
 // Get user by ID
 const getUserByIdFromDb = async (id) => {
-    return await (0, excuteQuery_1.default)("SELECT id, name, email, phone, landmark, flatnumber, pincode, city, state FROM users WHERE id = ?", [id]);
+    return await (0, excuteQuery_1.default)("SELECT id, name, email, phone, role, landmark, flatnumber, pincode, city, state FROM users WHERE id = ?", [id]);
 };
 exports.getUserByIdFromDb = getUserByIdFromDb;
 // Get user by email
@@ -22,12 +22,13 @@ const getUserByEmail = async (email) => {
 exports.getUserByEmail = getUserByEmail;
 // Insert new user
 const insertUser = async (userData) => {
-    const { name, email, passwordHash, phone, landmark, flatnumber, pincode, city, state, } = userData;
-    return await (0, excuteQuery_1.default)("INSERT INTO users (name, email, passwordHash, phone, landmark, flatnumber, pincode, city, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", [
+    const { name, email, passwordHash, phone, role, landmark, flatnumber, pincode, city, state, } = userData;
+    return await (0, excuteQuery_1.default)("INSERT INTO users (name, email, passwordHash, phone, role, landmark, flatnumber, pincode, city, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [
         name,
         email,
         passwordHash,
         phone,
+        role || "user",
         landmark || "",
         flatnumber || "",
         pincode || "",
@@ -38,12 +39,13 @@ const insertUser = async (userData) => {
 exports.insertUser = insertUser;
 // Update user
 const updateUserInDb = async (id, userData) => {
-    const { name, email, passwordHash, phone, landmark, flatnumber, pincode, city, state, } = userData;
-    return await (0, excuteQuery_1.default)("UPDATE users SET name = ?, email = ?, passwordHash = ?, phone = ?, landmark = ?, flatnumber = ?, pincode = ?, city = ?, state = ? WHERE id = ?", [
+    const { name, email, passwordHash, phone, role, landmark, flatnumber, pincode, city, state, } = userData;
+    return await (0, excuteQuery_1.default)("UPDATE users SET name = ?, email = ?, passwordHash = ?, phone = ?, role = ?, landmark = ?, flatnumber = ?, pincode = ?, city = ?, state = ? WHERE id = ?", [
         name,
         email,
         passwordHash,
         phone,
+        role,
         landmark,
         flatnumber,
         pincode,

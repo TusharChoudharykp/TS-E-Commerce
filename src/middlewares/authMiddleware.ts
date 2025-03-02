@@ -22,6 +22,10 @@ const authenticateJWT = (
     ? token.slice(7)
     : token;
 
+  if (!process.env.secret) {
+    throw new Error("JWT Secret is missing in environment variables.");
+  }
+
   jwt.verify(tokenWithoutBearer, process.env.secret as string, (err, user) => {
     if (err) {
       res.status(401).json({ message: "Access denied. Invalid token." });
@@ -33,4 +37,14 @@ const authenticateJWT = (
   });
 };
 
-export default authenticateJWT;
+const authorizeRole =
+  (roles: string[]) =>
+  (req: AuthRequest, res: Response, next: NextFunction): void => {
+    if (!req.user || !roles.includes(req.user.role)) {
+      res.status(403).json({ message: "Forbidden: Access denied" });
+      return;
+    }
+    next();
+  };
+
+export { authenticateJWT, authorizeRole };

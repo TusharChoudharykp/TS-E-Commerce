@@ -6,6 +6,7 @@ interface User {
   email: string;
   passwordHash: string;
   phone: string;
+  role?: "user" | "admin";
   landmark?: string;
   flatnumber?: string;
   pincode?: string;
@@ -16,14 +17,14 @@ interface User {
 // Get all users
 const getAllUsersFromDb = async (): Promise<User[]> => {
   return await executeQuery(
-    "SELECT id, name, email, phone, landmark, flatnumber, pincode, city, state FROM users"
+    "SELECT id, name, email, phone, role, landmark, flatnumber, pincode, city, state FROM users"
   );
 };
 
 // Get user by ID
 const getUserByIdFromDb = async (id: number): Promise<User[]> => {
   return await executeQuery(
-    "SELECT id, name, email, phone, landmark, flatnumber, pincode, city, state FROM users WHERE id = ?",
+    "SELECT id, name, email, phone, role, landmark, flatnumber, pincode, city, state FROM users WHERE id = ?",
     [id]
   );
 };
@@ -40,6 +41,7 @@ const insertUser = async (userData: User): Promise<any> => {
     email,
     passwordHash,
     phone,
+    role,
     landmark,
     flatnumber,
     pincode,
@@ -48,12 +50,13 @@ const insertUser = async (userData: User): Promise<any> => {
   } = userData;
 
   return await executeQuery(
-    "INSERT INTO users (name, email, passwordHash, phone, landmark, flatnumber, pincode, city, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)",
+    "INSERT INTO users (name, email, passwordHash, phone, role, landmark, flatnumber, pincode, city, state) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
     [
       name,
       email,
       passwordHash,
       phone,
+      role || "user",
       landmark || "",
       flatnumber || "",
       pincode || "",
@@ -64,12 +67,16 @@ const insertUser = async (userData: User): Promise<any> => {
 };
 
 // Update user
-const updateUserInDb = async (id: number, userData: User): Promise<any> => {
+const updateUserInDb = async (
+  id: number,
+  userData: Partial<User>
+): Promise<any> => {
   const {
     name,
     email,
     passwordHash,
     phone,
+    role,
     landmark,
     flatnumber,
     pincode,
@@ -78,12 +85,13 @@ const updateUserInDb = async (id: number, userData: User): Promise<any> => {
   } = userData;
 
   return await executeQuery(
-    "UPDATE users SET name = ?, email = ?, passwordHash = ?, phone = ?, landmark = ?, flatnumber = ?, pincode = ?, city = ?, state = ? WHERE id = ?",
+    "UPDATE users SET name = ?, email = ?, passwordHash = ?, phone = ?, role = ?, landmark = ?, flatnumber = ?, pincode = ?, city = ?, state = ? WHERE id = ?",
     [
       name,
       email,
       passwordHash,
       phone,
+      role,
       landmark,
       flatnumber,
       pincode,

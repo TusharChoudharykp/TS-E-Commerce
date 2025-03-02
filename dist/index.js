@@ -11,7 +11,7 @@ require("dotenv").config();
 const app = (0, express_1.default)();
 const PORT = 8001;
 app.use(body_parser_1.default.json());
-//routes
+// Routes
 app.use("/api", index_1.default);
 // Error handler
 app.use((err, req, res, next) => {

@@ -9,7 +9,7 @@ const PORT: number = 8001;
 
 app.use(bodyParser.json());
 
-//routes
+// Routes
 app.use("/api", routes);
 
 // Error handler

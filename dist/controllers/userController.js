@@ -43,7 +43,7 @@ const validate = (schema, data) => {
         throw new Error(error.details[0].message);
     }
 };
-// Get all users
+// Get all users (Admin Only)
 const getAllUsers = async (req, res, next) => {
     try {
         const users = await userService.getAllUsers();
@@ -57,7 +57,7 @@ exports.getAllUsers = getAllUsers;
 // Get user by ID
 const getUserById = async (req, res, next) => {
     try {
-        const user = await userService.getUserById(req.params.id);
+        const user = await userService.getUserById(Number(req.params.id));
         if (!user.length) {
             res.status(404).json({ message: "User not found" });
             return;
@@ -87,8 +87,11 @@ exports.registerUser = registerUser;
 const loginUser = async (req, res, next) => {
     try {
         validate(userValidator_1.loginUserSchema, req.body);
-        const { email, token } = await userService.loginUser(req.body.email, req.body.password);
-        res.status(200).json({ success: true, user: { email }, token });
+        // Get email, password, and role from the request body
+        const { email, password } = req.body;
+        // Call login service
+        const { role, token } = await userService.loginUser(email, password);
+        res.status(200).json({ success: true, user: { email, role }, token });
     }
     catch (err) {
         next(err);
@@ -99,7 +102,7 @@ exports.loginUser = loginUser;
 const updateUser = async (req, res, next) => {
     try {
         validate(userValidator_1.updateUserSchema, req.body);
-        const result = await userService.updateUser(req.params.id, req.body);
+        const result = await userService.updateUser(Number(req.params.id), req.body);
         if (!result.affectedRows) {
             res.status(404).json({ message: "User not found" });
             return;
@@ -116,7 +119,7 @@ exports.updateUser = updateUser;
 // Delete user
 const deleteUser = async (req, res, next) => {
     try {
-        const result = await userService.deleteUser(req.params.id);
+        const result = await userService.deleteUser(Number(req.params.id));
         if (!result.affectedRows) {
             res.status(404).json({ message: "User not found" });
             return;
@@ -130,3 +133,11 @@ const deleteUser = async (req, res, next) => {
     }
 };
 exports.deleteUser = deleteUser;
+exports.default = {
+    getAllUsers: exports.getAllUsers,
+    getUserById: exports.getUserById,
+    registerUser: exports.registerUser,
+    loginUser: exports.loginUser,
+    updateUser: exports.updateUser,
+    deleteUser: exports.deleteUser,
+};

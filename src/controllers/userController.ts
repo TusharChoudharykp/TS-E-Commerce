@@ -15,7 +15,7 @@ const validate = (schema: Joi.ObjectSchema, data: any) => {
   }
 };
 
-// Get all users
+// Get all users (Admin Only)
 export const getAllUsers = async (
   req: Request,
   res: Response,
@@ -36,7 +36,7 @@ export const getUserById = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const user = await userService.getUserById(req.params.id);
+    const user = await userService.getUserById(Number(req.params.id));
     if (!user.length) {
       res.status(404).json({ message: "User not found" });
       return;
@@ -72,11 +72,14 @@ export const loginUser = async (
 ): Promise<void> => {
   try {
     validate(loginUserSchema, req.body);
-    const { email, token } = await userService.loginUser(
-      req.body.email,
-      req.body.password
-    );
-    res.status(200).json({ success: true, user: { email }, token });
+
+    // Get email, password, and role from the request body
+    const { email, password } = req.body;
+
+    // Call login service
+    const { role, token } = await userService.loginUser(email, password);
+
+    res.status(200).json({ success: true, user: { email, role }, token });
   } catch (err) {
     next(err);
   }
@@ -90,7 +93,10 @@ export const updateUser = async (
 ): Promise<void> => {
   try {
     validate(updateUserSchema, req.body);
-    const result = await userService.updateUser(req.params.id, req.body);
+    const result = await userService.updateUser(
+      Number(req.params.id),
+      req.body
+    );
     if (!result.affectedRows) {
       res.status(404).json({ message: "User not found" });
       return;
@@ -110,7 +116,7 @@ export const deleteUser = async (
   next: NextFunction
 ): Promise<void> => {
   try {
-    const result = await userService.deleteUser(req.params.id);
+    const result = await userService.deleteUser(Number(req.params.id));
     if (!result.affectedRows) {
       res.status(404).json({ message: "User not found" });
       return;
@@ -121,4 +127,13 @@ export const deleteUser = async (
   } catch (err) {
     next(err);
   }
+};
+
+export default {
+  getAllUsers,
+  getUserById,
+  registerUser,
+  loginUser,
+  updateUser,
+  deleteUser,
 };
