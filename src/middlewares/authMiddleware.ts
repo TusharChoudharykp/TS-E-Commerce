@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from "express";
-import jwt from "jsonwebtoken";
+import jwt, { JwtPayload } from "jsonwebtoken";
 require("dotenv").config();
 
 interface AuthRequest extends Request {
-  user?: { id: number; role: string };
+  user?: { userId: number; role: string };
 }
 
 const authenticateJWT = (
@@ -26,15 +26,20 @@ const authenticateJWT = (
     throw new Error("JWT Secret is missing in environment variables.");
   }
 
-  jwt.verify(tokenWithoutBearer, process.env.secret as string, (err, user) => {
-    if (err) {
-      res.status(401).json({ message: "Access denied. Invalid token." });
-      return;
-    }
+  jwt.verify(
+    tokenWithoutBearer,
+    process.env.secret as string,
+    (err, decoded) => {
+      if (err || !decoded || typeof decoded === "string") {
+        res.status(401).json({ message: "Access denied. Invalid token." });
+        return;
+      }
 
-    req.user = user as { id: number; role: string };
-    next();
-  });
+      const payload = decoded as JwtPayload;
+      req.user = { userId: payload.userId, role: payload.role };
+      next();
+    }
+  );
 };
 
 const authorizeRole =

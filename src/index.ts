@@ -2,7 +2,6 @@ import express, { Application, Request, Response, NextFunction } from "express";
 import bodyParser from "body-parser";
 import "./config/databaseConnection";
 import routes from "./routes/index";
-require("dotenv").config();
 
 const app: Application = express();
 const PORT: number = 8001;

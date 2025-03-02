@@ -18,12 +18,13 @@ const authenticateJWT = (req, res, next) => {
     if (!process.env.secret) {
         throw new Error("JWT Secret is missing in environment variables.");
     }
-    jsonwebtoken_1.default.verify(tokenWithoutBearer, process.env.secret, (err, user) => {
-        if (err) {
+    jsonwebtoken_1.default.verify(tokenWithoutBearer, process.env.secret, (err, decoded) => {
+        if (err || !decoded || typeof decoded === "string") {
             res.status(401).json({ message: "Access denied. Invalid token." });
             return;
         }
-        req.user = user;
+        const payload = decoded;
+        req.user = { userId: payload.userId, role: payload.role };
         next();
     });
 };
