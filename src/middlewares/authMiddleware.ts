@@ -3,7 +3,7 @@ import jwt from "jsonwebtoken";
 require("dotenv").config();
 
 interface AuthRequest extends Request {
-  user?: any;
+  user?: { id: number; role: string };
 }
 
 const authenticateJWT = (
@@ -32,7 +32,7 @@ const authenticateJWT = (
       return;
     }
 
-    req.user = user;
+    req.user = user as { id: number; role: string };
     next();
   });
 };
@@ -47,4 +47,4 @@ const authorizeRole =
     next();
   };
 
-export { authenticateJWT, authorizeRole };
+export { authenticateJWT, authorizeRole, AuthRequest };
