@@ -87,9 +87,7 @@ exports.registerUser = registerUser;
 const loginUser = async (req, res, next) => {
     try {
         validate(userValidator_1.loginUserSchema, req.body);
-        // Get email, password, and role from the request body
         const { email, password } = req.body;
-        // Call login service
         const { role, token } = await userService.loginUser(email, password);
         res.status(200).json({ success: true, user: { email, role }, token });
     }
@@ -133,11 +131,3 @@ const deleteUser = async (req, res, next) => {
     }
 };
 exports.deleteUser = deleteUser;
-exports.default = {
-    getAllUsers: exports.getAllUsers,
-    getUserById: exports.getUserById,
-    registerUser: exports.registerUser,
-    loginUser: exports.loginUser,
-    updateUser: exports.updateUser,
-    deleteUser: exports.deleteUser,
-};

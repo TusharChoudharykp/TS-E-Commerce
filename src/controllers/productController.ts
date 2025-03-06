@@ -11,7 +11,7 @@ const validate = (schema: any, data: any) => {
 };
 
 // Get all products
-export const getAllProducts = async (
+const getAllProducts = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -25,7 +25,7 @@ export const getAllProducts = async (
 };
 
 // Get product by ID
-export const getProductById = async (
+const getProductById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -43,7 +43,7 @@ export const getProductById = async (
 };
 
 // Create a new product (Admin only)
-export const createProduct = async (
+const createProduct = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -60,7 +60,7 @@ export const createProduct = async (
 };
 
 // Update a product (Admin only)
-export const updateProduct = async (
+const updateProduct = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -84,7 +84,7 @@ export const updateProduct = async (
 };
 
 // Delete a product (Admin only)
-export const deleteProduct = async (
+const deleteProduct = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -101,4 +101,12 @@ export const deleteProduct = async (
   } catch (err) {
     next(err);
   }
+};
+
+export {
+  getAllProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
 };

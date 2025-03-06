@@ -16,7 +16,7 @@ const validate = (schema: Joi.ObjectSchema, data: any) => {
 };
 
 // Get all users (Admin Only)
-export const getAllUsers = async (
+const getAllUsers = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -30,7 +30,7 @@ export const getAllUsers = async (
 };
 
 // Get user by ID
-export const getUserById = async (
+const getUserById = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -48,7 +48,7 @@ export const getUserById = async (
 };
 
 // Register a new user
-export const registerUser = async (
+const registerUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -65,18 +65,14 @@ export const registerUser = async (
 };
 
 // User login
-export const loginUser = async (
+const loginUser = async (
   req: Request,
   res: Response,
   next: NextFunction
 ): Promise<void> => {
   try {
     validate(loginUserSchema, req.body);
-
-    // Get email, password, and role from the request body
     const { email, password } = req.body;
-
-    // Call login service
     const { role, token } = await userService.loginUser(email, password);
 
     res.status(200).json({ success: true, user: { email, role }, token });
@@ -86,7 +82,7 @@ export const loginUser = async (
 };
 
 // Update user
-export const updateUser = async (
+const updateUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -110,7 +106,7 @@ export const updateUser = async (
 };
 
 // Delete user
-export const deleteUser = async (
+const deleteUser = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -129,7 +125,7 @@ export const deleteUser = async (
   }
 };
 
-export default {
+export {
   getAllUsers,
   getUserById,
   registerUser,
